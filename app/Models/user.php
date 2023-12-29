@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
-
-class user extends Model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class user extends Authenticatable
 {
     use HasFactory, HasApiTokens;
 
@@ -18,5 +18,5 @@ class user extends Model
 
     public $timestamps = false;
 
-   
+
 }
