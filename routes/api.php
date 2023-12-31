@@ -10,8 +10,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::middleware([\App\Http\Middleware\Authenticator::class])->group(function () {
-    Route::resource('group', groupTaskController::class);
+
 });
+
+Route::resource('group', groupTaskController::class);
 
 Route::resource('user', UserController::class);
 
