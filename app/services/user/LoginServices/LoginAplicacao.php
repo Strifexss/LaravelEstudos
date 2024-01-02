@@ -1,11 +1,11 @@
 <?php
 
-namespace App\services\LoginServices;
+namespace App\services\user\LoginServices;
 
+use App\DTO\User\IDtoUser;
 use App\DTO\User\LoginUserDTO;
-use App\Interfaces\IDtoUser;
 use App\Repositories\userRepository;
-use App\services\interfaces\UserLoginClasses\ILoginUser;
+use App\services\user\interfaces\UserLoginClasses\Login\ILoginUser;
 
 class LoginAplicacao implements ILoginUser
 {

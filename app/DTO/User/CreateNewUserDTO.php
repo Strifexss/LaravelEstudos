@@ -3,9 +3,8 @@
 namespace App\DTO\User;
 
 use App\Http\Requests\User\CreateUserRequest;
-use Illuminate\Http\Request;
 
-class CreateNewUserDTO
+class CreateNewUserDTO implements IDtoUser
 {
     public function __construct(
         public string $name,
@@ -21,4 +20,14 @@ class CreateNewUserDTO
             $request->input('password')
         );
     }
+
+    public function  all():array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password
+        ];
+    }
+
 }

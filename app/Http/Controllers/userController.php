@@ -4,38 +4,53 @@ namespace App\Http\Controllers;
 
 use App\DTO\User\CreateNewUserDTO;
 use App\DTO\User\LoginUserDTO;
+use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\LoginUserRequest;
-use App\Services\LoginServices\LoginAplicacao;
-use App\Services\UserServices;
-use Illuminate\Http\Request;
+use App\services\user\CreateNewUserServices\CreateNewUserAplicacao;
+use App\services\user\LoginServices\LoginAplicacao;
+use App\services\user\UserServices;
+use Illuminate\Http\JsonResponse;
 
-class UserController extends Controller
+class userController extends Controller
 {
 
     public function __construct(
         private UserServices $userServices,
         private LoginAplicacao $loginAplicacao,
-        private LoginUserRequest $loginUserRequest
-    ){}
-
-    public function store(Request $request)
-    {
-        return $this->userServices->createNewUser(CreateNewUserDTO::makeFromRequest($request));
+        private CreateUserRequest $createUserRequest,
+        private LoginUserRequest $loginUserRequest,
+        private CreateNewUserAplicacao $createNewUserAplicacao
+    ){
     }
 
-    public function login(LoginUserRequest $loginUserRequest)
+    public function store(): JsonResponse
     {
-        $validator = validator($loginUserRequest->all(), $loginUserRequest->rules(), $loginUserRequest->messages());
+        try {
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+        $user = $this->userServices->createNewUser(
+            CreateNewUserDTO::makeFromRequest($this->createUserRequest),
+            $this->createNewUserAplicacao
+        );
+
+        return response()->json([
+            "message" => "Usuario Criado",
+            "User" => $user
+            ]);
+
+        }catch (\Throwable $e) {
+            return response()->json("Ocorreu um erro ao criar o usuário");
         }
+    }
+
+    public function login(): JsonResponse
+    {
 
         try {
             $usuario = $this->userServices->loginUser(
-                LoginUserDTO::makeFromRequest($loginUserRequest),
+                LoginUserDTO::makeFromRequest($this->loginUserRequest),
                 $this->loginAplicacao
             );
+
 
             return response()->json(['UsuarioEncontrado' => $usuario]);
         } catch (\Throwable $e) {

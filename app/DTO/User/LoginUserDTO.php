@@ -3,7 +3,6 @@
 namespace App\DTO\User;
 
 use App\Http\Requests\User\LoginUserRequest;
-use App\Interfaces\IDtoUser;
 
 class LoginUserDTO implements IDtoUser
 {
