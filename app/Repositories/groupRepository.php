@@ -16,4 +16,9 @@ class groupRepository {
     public function showAllGroups() {
         return group::all();
     }
+
+    public function searchAllGroupsByUserId(int $user_id)
+    {
+        return group::where("user_id", $user_id)->get();
+    }
 }

@@ -13,3 +13,5 @@ Route::resource('group', groupTaskController::class);
 Route::resource('user', userController::class);
 
 Route::post('/login', [userController::class, 'login']);
+
+Route::post("searchUserGroups", [groupTaskController::class, "searchUserGroups"]);

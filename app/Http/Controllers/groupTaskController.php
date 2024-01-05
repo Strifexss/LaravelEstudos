@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\DTO\Group\CreateNewGroupDTO;
+use App\DTO\Group\SearchUserGroupDTO;
 use App\Http\Requests\group\CreateNewGroupRequest;
+use App\Http\Requests\group\searchUserGroupsRequest;
 use App\Repositories\groupRepository;
 use App\services\groups\CreateNewGroupService\CreateGroupPadrao;
 use App\services\groups\GroupServices;
+use App\services\groups\SearchUserGroup\SearchUserGroupsPadrao;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,8 +18,6 @@ class groupTaskController extends Controller
 
     public function __construct(
         private GroupServices $services,
-        private CreateGroupPadrao $createGroupPadrao,
-        private CreateNewGroupRequest $request,
         private groupRepository $repository
     ) {
     }
@@ -24,7 +25,7 @@ class groupTaskController extends Controller
 
     public function index()
     {
-        return $this->repository->showAllGroups();
+        return ["data" => $this->repository->showAllGroups()];
     }
 
     public function create()
@@ -32,18 +33,31 @@ class groupTaskController extends Controller
 
     }
 
-    public function store():JsonResponse
+    public function searchUserGroups(searchUserGroupsRequest $request, SearchUserGroupsPadrao $searchUserGroupsPadrao)
+    {
+            $groups = $this->services->searchUserAllGroups(
+                SearchUserGroupDTO::makeFromRequest($request),
+                $searchUserGroupsPadrao
+            );
+            return response()->json([
+                "data" => $groups
+            ]);
+
+
+    }
+
+    public function store(CreateNewGroupRequest $request, CreateGroupPadrao $createGroupPadrao):JsonResponse
     {
         try {
             $newGroup = $this->services->createNewGroup(
-                CreateNewGroupDTO::makeFromRequest($this->request),
-                $this->createGroupPadrao
+                CreateNewGroupDTO::makeFromRequest($request),
+                $createGroupPadrao
             );
             return response()->json([
                 "newGroup" => $newGroup
             ]);
         }catch (\Throwable $e) {
-            return response()->json(["erro" => "Ocorreu um erro ao criar o grupo"]);
+            return response()->json(["erro" => "Ocorreu um erro ao criar o grupo"], 500);
         }
     }
 

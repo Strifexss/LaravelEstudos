@@ -16,20 +16,16 @@ class userController extends Controller
 
     public function __construct(
         private UserServices $userServices,
-        private LoginAplicacao $loginAplicacao,
-        private CreateUserRequest $createUserRequest,
-        private LoginUserRequest $loginUserRequest,
-        private CreateNewUserAplicacao $createNewUserAplicacao
     ){
     }
 
-    public function store(): JsonResponse
+    public function store(CreateUserRequest $request, CreateNewUserAplicacao $createUser): JsonResponse
     {
         try {
 
         $user = $this->userServices->createNewUser(
-            CreateNewUserDTO::makeFromRequest($this->createUserRequest),
-            $this->createNewUserAplicacao
+            CreateNewUserDTO::makeFromRequest($request),
+            $createUser
         );
 
         return response()->json([
@@ -42,15 +38,13 @@ class userController extends Controller
         }
     }
 
-    public function login(): JsonResponse
+    public function login(LoginUserRequest $request, LoginAplicacao $login): JsonResponse
     {
-
         try {
             $usuario = $this->userServices->loginUser(
-                LoginUserDTO::makeFromRequest($this->loginUserRequest),
-                $this->loginAplicacao
+                LoginUserDTO::makeFromRequest($request),
+                $login
             );
-
 
             return response()->json(['UsuarioEncontrado' => $usuario]);
         } catch (\Throwable $e) {
